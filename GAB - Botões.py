@@ -31,7 +31,6 @@ botao = tk.Button(text="Buscar Cotacao",command=busca_cotacao)
 botao.grid(row=2, column=1)
 
 
-
 # loop padrao em que o tkroda o tempo inteiro
 janela.mainloop()
-moeda.gat
+moeda.gat()

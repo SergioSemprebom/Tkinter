@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 janela = tk.Tk() # janela criada
 
 janela.title("Cotação de Moedas")# ------------------------------------ Criando um titulo
@@ -22,7 +21,30 @@ mensagem2.grid(row=1, column=0)
 moeda = tk.Entry()
 moeda.grid(row=1, column=1)
 
+#  ------- CRIAR A FUNCAO SEMPRE ANTES DO BOTAO ASSOCIADA A SUA FUNCAO ------------
+
+dicionario_cotacoes = {
+    'Dólar' : 5.67,
+    'Euro ': 6.78,
+    'Bitcoin' : 123.45
+
+}
+
+def busca_cotacao(): # a funcao dentro do Tkinter tem acesso a todos os paramentros do Tkinter
+    moeda_preenchida = moeda.get()# o get vai pegar a informacao dentro da caixa texto da moeda, será o texto q user preencheu
+    cotacao_moeda = dicionario_cotacoes.get(moeda_preenchida)# verificando o dicionario
+
+    # verificando se encntrou o resultado no dicionario
+    mensagem_cotacao = tk.Label(text="Cotaçao não encontrada")
+    mensagem_cotacao.grid(row=3, column=0)
+    if cotacao_moeda:
+        mensagem_cotacao["text"] = f"A cotacao de {moeda_preenchida} é de {cotacao_moeda} reais"
+
+
+botao = tk.Button(text="Buscar Cotacao",command=busca_cotacao)
+botao.grid(row=2, column=1)
+
 
 # loop padrao em que o tkroda o tempo inteiro
 janela.mainloop()
-moeda.gat()
+
