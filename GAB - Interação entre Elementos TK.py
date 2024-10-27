@@ -25,8 +25,8 @@ moeda.grid(row=1, column=1)
 
 dicionario_cotacoes = {
     'Dólar' : 5.67,
-    'Euro ': 6.78,
-    'Bitcoin' : 123.45
+    'Euro': 6.78,
+    'Bitcoin' : 20000
 
 }
 
