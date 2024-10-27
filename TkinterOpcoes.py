@@ -33,5 +33,4 @@ botao_enviar.grid(row=2, column=0)
 
 
 
-
 janela.mainloop()
