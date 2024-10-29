@@ -3,6 +3,12 @@ from tkinter import ttk # ---- PASSO 4.1.1)
 from tkcalendar import DateEntry # ---- PASSO 4.2.1)
 import requests # --- PASSO 6)
 
+# --- PASSO 6)
+# --- Sistema de Cotação de moedas com API
+requisicao = requests.get('https://economia.awesomeapi.com.br/json/all')
+dicionario_moedas = requisicao.json()# vai transformar o dicionario json em um dict python
+lista_moedas = list(dicionario_moedas.keys())
+
 
 # ---- PASSO 1)
 janela = tk.Tk() # Janela Criada
