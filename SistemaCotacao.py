@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk # ---- PASSO 4.1.1)
 from tkcalendar import DateEntry # ---- PASSO 4.2.1)
+from tkinter.filedialog import askopenfilename # ---- PASSO 5.1.1)
 import requests # --- PASSO 6)
 
 # --- PASSO 6)
@@ -17,17 +18,36 @@ janela = tk.Tk() # Janela Criada
 
 # ---- PASSO 4.3.2)
 def pegar_cotacao():
-    pass
-
+    moeda = combobox_selecionamoedas.get()
+    data_cotacao = calendario_moeda.get()
+    ano = data_cotacao[-4:]# quatro ultimo digitos 2024
+    mes = data_cotacao[3:5]# indice tres até o indice cinco
+    dia = data_cotacao[:2] # até o indice dois( mais nao pega o indice 2)
+    link = f'https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?start_date={ano}{mes}{dia}&end_date={ano}{mes}{dia}'
+    requisicao_moeda = requests.get(link)
+    cotacao = requisicao_moeda.json()
+    valor_moeda = cotacao[0]['bid']# utilizando o link(var_cotacao) -> cotacao[0] -> é o dict
+    label_textocotacao['text'] = f'A cotação da {moeda} no dia {data_cotacao} é de: R${valor_moeda}'
 
 # ---- PASSO 5.1.1)
 def selecionar_aquivo():
-    pass
+    caminho_arquivo = askopenfilename(title='Selecione o Arquivo de Moeda')
+    # preciso a armazenar a info do caminho do arquivo na variavel do tkinter
+    var_caminhoarquivo.set(caminho_arquivo)
+    if caminho_arquivo:
+        label_arquivoselecionado['text'] = f'Arquivo Selecionado: {caminho_arquivo}'
+
+
 
 
 # ---- PASSO 5.4) botao atualizar cotacoes
 def atualizar_cotacoes():
-    pass
+    # ler o df de moeda
+    # pegar a data de inicio e data de fim da cotacoes
+    # para cada noeda
+        # pegar todas as cotacoes daquela moeda
+        # criar uma coluna em novo dataframe com todas as cotacoes daquela moeda
+    # criar um arquivo com todas as cotacoes
 
 
 
@@ -79,6 +99,10 @@ label_cotacaovariasmoedas.grid(row=4, column=0, padx=10, pady=10, sticky="nsew",
 # ---- PASSO 5.1)
 label_selecionaraquivo = tk.Label(text="Selecionar um Arq. em Excel com as Moedas na coluna A")
 label_selecionaraquivo.grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+
+# utilizamos na aula do RadioButon
+var_caminhoarquivo = tk.StringVar()
+
 
 # ---- PASSO 5.1.1)
 botao_selecionararquivo = tk.Button(text="Clique para Selecionar", command=selecionar_aquivo)

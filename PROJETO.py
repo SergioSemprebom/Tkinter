@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk # ---- PASSO 4.1.1)
 from tkcalendar import DateEntry # ---- PASSO 4.2.1)
-import requests # --- PASSO 6)
 
 
 # ---- PASSO 1)
