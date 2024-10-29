@@ -2,18 +2,18 @@ import tkinter as tk
 from tkinter import ttk # ---- PASSO 4.1.1)
 from tkcalendar import DateEntry # ---- PASSO 4.2.1)
 from tkinter.filedialog import askopenfilename # ---- PASSO 5.1.1)
+import pandas as pd # ---- PASSO 5.1.2)
 import requests # --- PASSO 6)
+from datetime import datetime # --- PASSO 6)
+import numpy as np
+
+
 
 # --- PASSO 6)
 # --- Sistema de Cotação de moedas com API
 requisicao = requests.get('https://economia.awesomeapi.com.br/json/all')
 dicionario_moedas = requisicao.json()# vai transformar o dicionario json em um dict python
 lista_moedas = list(dicionario_moedas.keys())
-
-
-# ---- PASSO 1)
-janela = tk.Tk() # Janela Criada
-
 
 
 # ---- PASSO 4.3.2)
@@ -34,29 +34,46 @@ def selecionar_aquivo():
     caminho_arquivo = askopenfilename(title='Selecione o Arquivo de Moeda')
     # preciso a armazenar a info do caminho do arquivo na variavel do tkinter
     var_caminhoarquivo.set(caminho_arquivo)
-    if caminho_arquivo:
-        label_arquivoselecionado['text'] = f'Arquivo Selecionado: {caminho_arquivo}'
-
-
-
 
 # ---- PASSO 5.4) botao atualizar cotacoes
 def atualizar_cotacoes():
-    # ler o df de moeda
-    # pegar a data de inicio e data de fim da cotacoes
-    # para cada noeda
-        # pegar todas as cotacoes daquela moeda
-        # criar uma coluna em novo dataframe com todas as cotacoes daquela moeda
-    # criar um arquivo com todas as cotacoes
+    #le o df de moeda
+    df =pd.read_excel(var_caminhoarquivo.get())
+    moedas = df.iloc[:, 0] #[indice, coluna]
+    #pegar a data de inicio e data de fim da cotacoes
+    data_inicial = calendario_datainicial.get()
+    data_final = calendario_datafinal.get()
+    ano_inicial = data_inicial[-4:]
+    mes_inicial = data_inicial[3:5]
+    dia_inicial = data_inicial[:2]
+
+    ano_final = data_final[-4:]
+    mes_final = data_final[3:5]
+    dia_final = data_final[:2]
+    for moeda in moedas:
+        link = f'https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?' \
+               f'start_date={ano_inicial}{mes_inicial}{dia_inicial}&' \
+                f'end_date={ano_final}{mes_final}{dia_final}'
+        requisicao_moeda = requests.get(link)
+        cotacoes = requisicao_moeda.json()
+        for cotacao in cotacoes:
+            timestamp = int(cotacao['timestamp'])
+            bid = float(cotacao['bid'])
+            data = datetime.timestamp(timestamp)
+            data = datetime.strtime('%d/%m/%Y')
+            if data in df:
+                df[data] = np.nan
+            df.loc[df.iloc[:, 0] == moeda, data] = bid
+    df.to_excel("Teste.xlsx")
+    label_atualizarcotacoes['text'] = 'Arquivo Atualizado com Sucesso!'
 
 
-
+# ---- PASSO 1)
+janela = tk.Tk() # Janela Criada
 
 # ---- PASSO 3)
 # Titulo Central
 janela.title('Ferramenta de Cotação de Moedas')
-
-
 
 
 # ---- PASSO 4)
@@ -100,7 +117,7 @@ label_cotacaovariasmoedas.grid(row=4, column=0, padx=10, pady=10, sticky="nsew",
 label_selecionaraquivo = tk.Label(text="Selecionar um Arq. em Excel com as Moedas na coluna A")
 label_selecionaraquivo.grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-# utilizamos na aula do RadioButon
+# utilizamos
 var_caminhoarquivo = tk.StringVar()
 
 
